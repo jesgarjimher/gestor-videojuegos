@@ -14,6 +14,7 @@ async function getJuegos() {
                 tbody.innerHTML += `
                 <tr>
                   <td class="td-id">${juego.id}</td>
+                  <td>${juego.titulo}</td>
                   <td>${juego.plataforma}</td>
                   <td>${juego.genero}</td>
                   <td>${juego.anyo}</td>
@@ -45,7 +46,10 @@ async function getJuegos() {
 document.addEventListener('DOMContentLoaded', getJuego());
 
     async function getJuego() {
-        const response = await fetch("http://localhost:9000/api/videojuegos/1");
+        let params = new URLSearchParams(document.location.search);
+        let paramsId = Number(params.get("id"));
+        console.log(paramsId);
+        const response = await fetch(`http://localhost:9000/api/videojuegos/${paramsId}`);
 
         const datos = await response.json();
         console.log(datos);
@@ -84,7 +88,7 @@ document.addEventListener('DOMContentLoaded', getJuego());
                         </select>
                         <label>Género*:</label>
                         <select name='genero' class='input-box' id='genero'>
-                            <option>option 1</option>
+                            <option>AVENTURA</option>
                             <option>option 2</option>
                         </select>
                     </div>
@@ -156,20 +160,21 @@ document.addEventListener('DOMContentLoaded', getJuego());
             let nota = document.querySelector("#nota").value;
 
             const juegoEditado = {
-                "id": id,
+                "id": Number(id),
                 "titulo": titulo,
                 "plataforma": plataforma,
                 "genero": genero,
-                "anyo": anyo,
+                "anyo": parseInt(anyo),
                 "compania": compania,
-                "precio": precio,
+                "precio": parseFloat(precio),
                 "descripcion": descripcion,
                 "estado": estado,
+                "nota": parseFloat(nota)
 
             }; console.log("juego editado => ",juegoEditado)
 
             if(id.length > 0) {
-                const respuestaActualizar = fetch(`${BASE_URL}/id`,{
+                const respuestaActualizar = fetch(`${BASE_URL}/${id}`,{
                     method: "PUT",
                     headers: {
                         "Content-Type":"application/json"

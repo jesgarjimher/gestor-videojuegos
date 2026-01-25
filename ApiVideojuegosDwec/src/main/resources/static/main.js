@@ -45,10 +45,17 @@ async function getJuegos() {
 
 document.addEventListener('DOMContentLoaded', () => {
         getJuego()
+
+
         async function getJuego() {
             let params = new URLSearchParams(document.location.search);
             let paramsId = params.get("id");
 
+
+            const opcionesResponse = await fetch(`${BASE_URL}/catalogos`);
+            const opciones = await opcionesResponse.json();
+            const generos = opciones.generos;
+            console.log("opciones =>" + generos);
 
         let datos = { id: "", titulo: "", plataforma: "", genero: "", anyo: "", nota: "", compania: "", precio: "",descripcion: "", estado: ""};
 
@@ -83,6 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             <input name='titulo' type='text' id='titulo' class='input-box' value='${datos.titulo}' required>
                         </div>
                         <div>
+                          <label>Companía*:</label>
+                          <input name='compania' type='text' id='compania' class='input-box' value='${datos.compania}' required>
+                      </div>
+                        <div>
                             <label>Plataforma*:</label>
                             <select name='plataforma' class='input-box' id='plataforma'>
                                 <option value='PC' ${datos.plataforma === 'PC' ? 'selected' : ''}>PC</option>
@@ -94,9 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div>
                             <label>Género*:</label>
                             <select name='genero' class='input-box' id='genero'>
-                                <option value="AVENTURA" ${datos.genero === 'AVENTURA' ? 'selected' : ''}>AVENTURA</option>
-                                <option value="ACCION" ${datos.genero === 'ACCION' ? 'selected' : ''}>ACCIÓN</option>
-                                <option value="RPG" ${datos.genero === 'RPG' ? 'selected' : ''}>RPG</option>
+                            ${generos.map(genero =>`
+                                <option value='${genero}' ${datos.genero === '${genero}' ? 'selected' : ''}>${genero}</option>
+                                `
+                            ).join("")}
+//                                
                             </select>
                         </div>
                         <div>

@@ -2,6 +2,11 @@ const BASE_URL = "http://localhost:9000/api/videojuegos";
 
 document.addEventListener('DOMContentLoaded', getJuegos());
 
+async function irFormulario() {
+    window.location.href = `/formulario.html`;
+
+}
+
 //cargar juegos para la página home
 async function getJuegos() {
 
@@ -56,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const opciones = await opcionesResponse.json();
             const generos = opciones.generos;
             console.log("opciones =>" + generos);
+            const estados = opciones.estados;
 
         let datos = { id: "", titulo: "", plataforma: "", genero: "", anyo: "", nota: "", compania: "", precio: "",descripcion: "", estado: ""};
 
@@ -109,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <option value='${genero}' ${datos.genero === '${genero}' ? 'selected' : ''}>${genero}</option>
                                 `
                             ).join("")}
-//                                
+//
                             </select>
                         </div>
                         <div>
@@ -131,8 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div>
                             <label>Estado</label>
                             <select id='estado' name='estado' class='input-box'>
-                                <option value='DISPONIBLE' ${datos.estado === 'DISPONIBLE' ? 'selected' : ''}>Disponible</option>
-                                <option value='RESERVADO' ${datos.estado === 'RESERVADO' ? 'selected' : ''}>Reservado</option>
+                            ${estados.map(estado => `
+//                                <option value='${estado}' ${datos.estado === '${estado}' ? 'selected' : ''}>${estado}</option>
+
+                            `).join("")};
+//
                             </select>
                         </div>
                         <div class="buttons-container">
@@ -179,7 +188,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         body: JSON.stringify(juegoEditado)
                     })
 
+                }else {
+                    const respuestaCrear = fetch(`${BASE_URL}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":"application/json"
+                        },
+                        body: JSON.stringify(juegoEditado)
+                    })
+                    console.log("juego creado")
                 }
+
             })
 
     }

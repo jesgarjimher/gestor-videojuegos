@@ -11,6 +11,8 @@ async function getJuegos() {
 
 
 
+
+
     //cargar juegos para la página home
     async function pintarJuegos(juegos) {
 
@@ -38,6 +40,36 @@ async function getJuegos() {
         }
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    let ascendente = true;
+
+    function ordenar() {
+        listaJuegos.sort((a, b) => {
+            if (ascendente) {
+                return a.titulo.localeCompare(b.titulo);
+            } else {
+                return b.titulo.localeCompare(a.titulo);
+            }
+        });
+
+        //cambio el sentido cada vez que se ejecuta la funcion
+        ascendente = !ascendente;
+        if(ascendente) {
+            btnOrdenar.innerHTML = "Descendente";
+        }else{
+            btnOrdenar.innerHTML = "Ascendente";
+        }
+
+
+        pintarJuegos(listaJuegos);
+    }
+
+    const btnOrdenar = document.querySelector("#btn-ordenar");
+
+
+    btnOrdenar.addEventListener("click", ordenar);
+
+
 
     const selGenero = document.querySelector("#selGenero");
     const selPlataforma = document.querySelector("#selPlataforma");

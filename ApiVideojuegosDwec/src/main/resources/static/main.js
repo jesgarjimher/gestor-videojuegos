@@ -21,14 +21,14 @@ async function getJuegos() {
 
                 juegos.forEach(juego => {
                     tbody.innerHTML += `
-                    <tr id=${juego.id}>
+                    <tr id=${juego.id} class='fila'>
                       <td class="td-id">${juego.id}</td>
                       <td>${juego.titulo}</td>
                       <td>${juego.plataforma}</td>
                       <td>${juego.genero}</td>
                       <td>${juego.anyo}</td>
                       <td>${juego.nota}</td>
-                      <td class='left down'>
+                      <td class='left'>
                          <button>Ver</button>
                          <button onclick='irEditar(this)'><img src='./imgs/editar-icon.png' class='icon-editar' >Editar</button>
                          <button onclick='borrar(this)'><img src='./imgs/icono-borrar.png' class='icon' >Borrar</button>
@@ -199,8 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h2 class='title-form'>${paramsId ? 'Editar videojuego' : 'Nuevo videojuego'}</h2>
                     <div class='subcontainer-form'>
                         <div>
-                            <label>ID:</label>
-                            <input name='id' id='id' type='number' class='input-box' value='${datos.id}' ${paramsId ? 'readonly' : ''}>
+                            
+                            <input name='id' id='id' type='number' class='input-box' value='${datos.id}' ${paramsId ? 'readonly' : ''} hidden>
                         </div>
                         <div>
                             <label>Título*:</label>

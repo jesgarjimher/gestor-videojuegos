@@ -1,40 +1,114 @@
 const BASE_URL = "http://localhost:9000/api/videojuegos";
+let listaJuegos = [];
 
-document.addEventListener('DOMContentLoaded', getJuegos());
 
-async function irFormulario() {
-    window.location.href = `/formulario.html`;
+async function getJuegos() {
+    const response = await fetch(`${BASE_URL}`);
 
+    listaJuegos = await response.json();
+    pintarJuegos(listaJuegos);
 }
 
-//cargar juegos para la página home
-async function getJuegos() {
-
-            const response = await fetch(`${BASE_URL}`);
-
-            const datos = await response.json();
-            const tbody = document.querySelector("#tbody");
-
-            datos.forEach(juego => {
-                tbody.innerHTML += `
-                <tr>
-                  <td class="td-id">${juego.id}</td>
-                  <td>${juego.titulo}</td>
-                  <td>${juego.plataforma}</td>
-                  <td>${juego.genero}</td>
-                  <td>${juego.anyo}</td>
-                  <td>${juego.nota}</td>
-                  <td class='left down'>
-                     <button>Ver</button>
-                     <button onclick='irEditar(this)'><img src='./imgs/editar-icon.png' class='icon-editar' >Editar</button>
-                     <button><img src='./imgs/icono-borrar.png' class='icon'>Borrar</button>
-                  </td>
-                </tr>
-                `
-            });
 
 
+    //cargar juegos para la página home
+    async function pintarJuegos(juegos) {
+
+    const tbody = document.querySelector("#tbody");
+    tbody.innerHTML = "";
+
+                juegos.forEach(juego => {
+                    tbody.innerHTML += `
+                    <tr id=${juego.id}>
+                      <td class="td-id">${juego.id}</td>
+                      <td>${juego.titulo}</td>
+                      <td>${juego.plataforma}</td>
+                      <td>${juego.genero}</td>
+                      <td>${juego.anyo}</td>
+                      <td>${juego.nota}</td>
+                      <td class='left down'>
+                         <button>Ver</button>
+                         <button onclick='irEditar(this)'><img src='./imgs/editar-icon.png' class='icon-editar' >Editar</button>
+                         <button onclick='borrar(this)'><img src='./imgs/icono-borrar.png' class='icon' >Borrar</button>
+                      </td>
+                    </tr>
+                    `
+                });
+
+        }
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const selGenero = document.querySelector("#selGenero");
+    const selPlataforma = document.querySelector("#selPlataforma");
+    const buscar = document.querySelector("#buscar");
+
+
+
+    function filtroBuscar() {
+        const textoBusqueda = buscar.value.toLowerCase();
+        const generoSel = selGenero.value;
+        const plataformaSel = selPlataforma.value;
+
+        const filtrados = listaJuegos.filter(juego => {
+            const matchTexto = juego.titulo.toLowerCase().includes(textoBusqueda);
+
+            const matchGenero = generoSel === "" || juego.genero === generoSel;
+
+            const matchPlataforma = plataformaSel === "" || juego.plataforma === plataformaSel;
+
+            return matchTexto && matchGenero && matchPlataforma;
+        });
+
+        pintarJuegos(filtrados);
     }
+
+     buscar.addEventListener("input", filtroBuscar);
+     selGenero.addEventListener("change", filtroBuscar);
+     selPlataforma.addEventListener("change", filtroBuscar)
+
+
+    async function getOpciones() {
+        const opcionesResponse = await fetch(`${BASE_URL}/catalogos`);
+        const opciones = await opcionesResponse.json();
+        const generos = opciones.generos;
+        const plataformas = opciones.plataformas;
+
+        generos.forEach(genero => {
+            selGenero.innerHTML += `<option value='${genero}'>${genero}</option>`;
+
+        })
+
+        plataformas.forEach(plataforma => {
+            selPlataforma.innerHTML += `<option value=${plataforma}>${plataforma}</option>`;
+        })
+    }
+
+
+
+        getOpciones();
+        getJuegos();
+
+
+
+
+
+});
+
+        async function borrar(element) {
+            let fila = element.closest("tr");
+            let idBorrar = fila.querySelector(".td-id").innerText;
+            //let row = document.querySelector(idBorrar);
+
+            alert("borar " + idBorrar)
+            let responseBorrar = await fetch(`${BASE_URL}/${idBorrar}`, {
+                method: "DELETE",
+            }
+
+            ).then(response => console.log("response tras delete =>",response))
+            .then(fila.remove());
+
+        }
 
     async function irEditar(element) {
         let fila = element.closest("tr");
@@ -42,6 +116,11 @@ async function getJuegos() {
         window.location.href = `/formulario.html?id=${id}`;
     }
 
+
+    async function irFormulario() {
+            window.location.href = `/formulario.html`;
+
+        }
 
 
 

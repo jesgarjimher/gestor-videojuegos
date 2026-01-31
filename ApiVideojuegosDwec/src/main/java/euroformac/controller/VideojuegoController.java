@@ -57,7 +57,7 @@ public class VideojuegoController {
 
         return repo.findById(id)
                 .map(existente -> {
-                    // Reemplazo completo: copiamos TODOS los campos desde el request
+// Reemplazo completo: copiamos TODOS los campos desde el request
                     existente.setTitulo(request.getTitulo());
                     existente.setPlataforma(request.getPlataforma());
                     existente.setGenero(request.getGenero());
@@ -75,9 +75,23 @@ public class VideojuegoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // =========================
-    // Mappers (DTO <-> Entity)
-    // =========================
+    // 3.5 Borrar (borrado con devolución de objeto)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<VideojuegoResponse> borrar(@PathVariable Long id) {
+
+        return repo.findById(id)
+                .map(v -> {
+                    repo.delete(v);
+                    return ResponseEntity.ok(toResponse(v)); // 200 + objeto borrado
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+
+// =========================
+// Mappers (DTO <-> Entity)
+// =========================
 
     private VideojuegoResponse toResponse(Videojuego v) {
         return new VideojuegoResponse(

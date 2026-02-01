@@ -152,15 +152,28 @@ document.addEventListener('DOMContentLoaded', () => {
         async function borrar(element) {
             let fila = element.closest("tr");
             let idBorrar = fila.querySelector(".td-id").innerText;
-            //let row = document.querySelector(idBorrar);
 
-            alert("borar " + idBorrar)
-            let responseBorrar = await fetch(`${BASE_URL}/${idBorrar}`, {
-                method: "DELETE",
+            if(!confirm("¿Deseas borrar el videojuego?")){
+                return;
             }
+            try {
+                let responseBorrar = await fetch(`${BASE_URL}/${idBorrar}`, {
+                    method: "DELETE",
+                });
 
-            ).then(response => console.log("response tras delete =>",response))
-            .then(fila.remove());
+                if(responseBorrar.ok) {
+                    fila.remove();
+                    listaJuegos = listaJuegos.filter(juego => juego.id != idBorrar);
+                }else if(response.status === 404) {
+                    throw new Error("El videojuego no existe en la base de datos");
+                }else {
+                    throw new Error("Error al borrar el juego: " + responseBorrar.statusText)
+                }
+            }catch(error) {
+                let spanErrores = document.querySelector("#span-errores");
+                spanErrores.innerHTML = `Error al borrar el videejuego. Ver consola para más información`;
+                console.log(error.message)
+            }
 
         }
 

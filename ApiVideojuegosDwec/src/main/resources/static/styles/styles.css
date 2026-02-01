@@ -130,6 +130,11 @@ label {
     margin-right: 50px;
 }
 
+#span-errores {
+    text-align: center;
+    width: 100%;
+}
+
 
 .down {
     padding: 30px;

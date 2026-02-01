@@ -3,10 +3,22 @@ let listaJuegos = [];
 
 
 async function getJuegos() {
-    const response = await fetch(`${BASE_URL}`);
+    try {
+        const response = await fetch(`${BASE_URL}`);
+        //comprobar que el servidor responde
+        if(!response.ok) {
+           throw new Error("Error al cargar los juegos. Error:" + response.status);
+        }
+        listaJuegos = await response.json();
+        pintarJuegos(listaJuegos);
 
-    listaJuegos = await response.json();
-    pintarJuegos(listaJuegos);
+       //
+    }catch(error) {
+        let spanErrores = document.querySelector("#span-errores");
+        spanErrores.innerHTML = `Error al cargar los juegos. Ver consola para más información`;
+        console.log(error.message)
+    }
+
 }
 
 

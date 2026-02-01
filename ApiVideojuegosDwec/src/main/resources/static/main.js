@@ -25,6 +25,7 @@ async function getJuegos() {
                       <td class="td-id">${juego.id}</td>
                       <td>${juego.titulo}</td>
                       <td>${juego.plataforma}</td>
+                      <td>${juego.compania}</td>
                       <td>${juego.genero}</td>
                       <td>${juego.anyo}</td>
                       <td>${juego.nota}</td>
@@ -44,10 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let ascendente = true;
 
     function ordenar() {
-        listaJuegos.sort((a, b) => {
+        let listaDesordenada = [...listaJuegos];
+        listaDesordenada.sort((a, b) => {
             if (ascendente) {
                 return a.titulo.localeCompare(b.titulo);
-            } else {
+            }else {
                 return b.titulo.localeCompare(a.titulo);
             }
         });
@@ -61,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        pintarJuegos(listaJuegos);
+        pintarJuegos(listaDesordenada);
     }
 
     const btnOrdenar = document.querySelector("#btn-ordenar");
@@ -98,6 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
      buscar.addEventListener("input", filtroBuscar);
      selGenero.addEventListener("change", filtroBuscar);
      selPlataforma.addEventListener("change", filtroBuscar)
+
+     function limpiarFiltros() {
+        pintarJuegos(listaJuegos);
+     }
+
+     const btnLimpiar = document.querySelector("#limpiar");
+
+     btnLimpiar.addEventListener("click", limpiarFiltros);
 
 
     async function getOpciones() {
@@ -199,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h2 class='title-form'>${paramsId ? 'Editar videojuego' : 'Nuevo videojuego'}</h2>
                     <div class='subcontainer-form'>
                         <div>
-                            
+
                             <input name='id' id='id' type='number' class='input-box' value='${datos.id}' ${paramsId ? 'readonly' : ''} hidden>
                         </div>
                         <div>
